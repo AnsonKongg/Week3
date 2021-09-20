@@ -1,27 +1,61 @@
-import * as APIs from "../config/APIs";
 import * as types from "../config/ActionTypes";
-import { notification } from 'antd';
+import faker from "faker";
 
-export const getVehicleList = () => {
+export const getVehicleList = (times) => {
     return async dispatch => {
         try {
-            // const url = APIs.GET_STOCK_LIST_API + "?symbol=" + symbol + "&token=" + token;
-            // const response = await fetch(url)
-            // const stock = await response.json()
-            // const stockDetail = {
-            //     symbol: symbol,
-            //     current_price: stock.c,
-            //     change: stock.d > 0 ? "+" + String(stock.d) : String(stock.d),
-            //     change_percent: Math.abs(Number(stock.dp).toFixed(2)),
-            // }
-            // dispatch({
-            //     type: types.GET_VEHICLE_SUCCESS,
-            //     symbol,
-            //     stockDetail: stockDetail,
-            // });
+            const vehicleLis = [];
+            for (let i = 0; i < times; i++) {
+                const obj = {
+                    id: i+1,
+                    vehicle: faker.vehicle.vehicle(),
+                    type: faker.vehicle.type(),
+                    fuel: faker.vehicle.fuel(),
+                    color: faker.vehicle.color(),
+                }
+                vehicleLis.push(obj);
+            }
+            dispatch({
+                type: types.GET_VEHICLE_SUCCESS,
+                vehicleLis: vehicleLis,
+                vehicleTotalAmount: times,
+            });
         } catch (error) {
             dispatch({
                 type: types.GET_VEHICLE_FAILED,
+                errorMessage: error,
+            });
+        }
+    }
+}
+export const updateVehicle = (newData) => {
+    return async dispatch => {
+        dispatch({
+            type: types.UPDATE_VEHICLE,
+        });
+        try {
+            dispatch({
+                type: types.UPDATE_VEHICLE_SUCCESS,
+                newData
+            });
+        } catch (error) {
+            dispatch({
+                type: types.UPDATE_VEHICLE_FAILED,
+                errorMessage: error,
+            });
+        }
+    }
+}
+export const removeVehicle = (id) => {
+    return async dispatch => {
+        try {
+            dispatch({
+                type: types.DELETE_VEHICLE_SUCCESS,
+                id
+            });
+        } catch (error) {
+            dispatch({
+                type: types.DELETE_VEHICLE_FAILED,
                 errorMessage: error,
             });
         }
